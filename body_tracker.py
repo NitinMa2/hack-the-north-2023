@@ -44,11 +44,8 @@ def draw_landmarks_on_image(rgb_image, detection_result):
 def image_process_callback(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
   global latest_result, stored_positions
   latest_result = result
-  print("process data")
 
   pose_landmarks_list = result.pose_landmarks
-
-  print("process data")
 
   # head
   stored_positions[0].append(pose_landmarks_list[0][0])
@@ -65,11 +62,26 @@ def image_process_callback(result: PoseLandmarkerResult, output_image: mp.Image,
   # R hand
   stored_positions[4].append(pose_landmarks_list[0][16])
 
-  print("processed data")
-
 def process_positional_data():
   global stored_positions
 
+  fast_speed_threshold = 0
+
+  num_positions = len(stored_positions[0])
+
+  for i in range(num_positions):
+    head_pos = (stored_positions[0].x, stored_positions[0].y)
+    l_shoulder_pos = (stored_positions[1].x, stored_positions[1].y)
+    r_shoulder_pos = (stored_positions[2].x, stored_positions[2].y)
+    l_hand_pos = (stored_positions[3].x, stored_positions[3].y)
+    r_hand_pos = (stored_positions[4].x, stored_positions[4].y)
+
+
+
   plt.plot([i.x for i in stored_positions[0]], [i.y for i in stored_positions[0]])
+  plt.plot([i.x for i in stored_positions[1]], [i.y for i in stored_positions[1]])
+  plt.plot([i.x for i in stored_positions[2]], [i.y for i in stored_positions[2]])
+  plt.plot([i.x for i in stored_positions[3]], [i.y for i in stored_positions[3]])
+  plt.plot([i.x for i in stored_positions[4]], [i.y for i in stored_positions[4]])
   plt.show()
   
