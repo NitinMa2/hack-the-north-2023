@@ -1,12 +1,8 @@
 import mediapipe as mp
-import cv2
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
 import numpy as np
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-
-model_path = './models/pose_landmarker_heavy.task'
+import matplotlib.pyplot as plt
 
 BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
@@ -15,17 +11,17 @@ PoseLandmarkerResult = mp.tasks.vision.PoseLandmarkerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
 
 latest_result = None
+stored_positions = [[] for i in range(5)] # head, L shoulder, R shoulder, L hand, R hand
 
 # Create a pose landmarker instance with the live stream mode:
 def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
     global latest_result
     latest_result = result
-    print('pose landmarker result: {}'.format(result))
+    print('pose landmarker result: {}'.format(result))  
 
 def draw_landmarks_on_image(rgb_image, detection_result):
   if detection_result == None:
      return rgb_image
-  print("Drawn")
   pose_landmarks_list = detection_result.pose_landmarks
   annotated_image = np.copy(rgb_image)
 
@@ -45,28 +41,35 @@ def draw_landmarks_on_image(rgb_image, detection_result):
       solutions.drawing_styles.get_default_pose_landmarks_style())
   return annotated_image
 
+def image_process_callback(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
+  global latest_result, stored_positions
+  latest_result = result
+  print("process data")
 
-options = PoseLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=model_path),
-    running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
+  pose_landmarks_list = result.pose_landmarks
 
-cap_cam = cv2.VideoCapture(0)
-cap_cam.set(cv2.CAP_PROP_POS_MSEC, 0)
+  print("process data")
 
-with PoseLandmarker.create_from_options(options) as landmarker:
+  # head
+  stored_positions[0].append(pose_landmarks_list[0][0])
 
-  while True:
-    ret, frame = cap_cam.read()
+  # L shoulder
+  stored_positions[1].append(pose_landmarks_list[0][11])
 
-    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-    landmarker.detect_async(mp_image, int(cap_cam.get(cv2.CAP_PROP_POS_MSEC)))
+  # R shoulder
+  stored_positions[2].append(pose_landmarks_list[0][12])
 
-    annotated_image = draw_landmarks_on_image(frame, latest_result)
-    # cv2_imshow(cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR))
+  # L hand
+  stored_positions[3].append(pose_landmarks_list[0][15])
 
-    cv2.imshow('frame', annotated_image)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    
-  cv2.destroyWindow('frame')
+  # R hand
+  stored_positions[4].append(pose_landmarks_list[0][16])
+
+  print("processed data")
+
+def process_positional_data():
+  global stored_positions
+
+  plt.plot([i.x for i in stored_positions[0]], [i.y for i in stored_positions[0]])
+  plt.show()
+  
