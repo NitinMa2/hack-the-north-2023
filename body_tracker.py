@@ -1,12 +1,7 @@
 import mediapipe as mp
-import cv2
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
 import numpy as np
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-
-model_path = './models/pose_landmarker_heavy.task'
 
 BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
@@ -25,7 +20,6 @@ def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp
 def draw_landmarks_on_image(rgb_image, detection_result):
   if detection_result == None:
      return rgb_image
-  print("Drawn")
   pose_landmarks_list = detection_result.pose_landmarks
   annotated_image = np.copy(rgb_image)
 
@@ -44,29 +38,3 @@ def draw_landmarks_on_image(rgb_image, detection_result):
       solutions.pose.POSE_CONNECTIONS,
       solutions.drawing_styles.get_default_pose_landmarks_style())
   return annotated_image
-
-
-options = PoseLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path=model_path),
-    running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
-
-cap_cam = cv2.VideoCapture(0)
-cap_cam.set(cv2.CAP_PROP_POS_MSEC, 0)
-
-with PoseLandmarker.create_from_options(options) as landmarker:
-
-  while True:
-    ret, frame = cap_cam.read()
-
-    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-    landmarker.detect_async(mp_image, int(cap_cam.get(cv2.CAP_PROP_POS_MSEC)))
-
-    annotated_image = draw_landmarks_on_image(frame, latest_result)
-    # cv2_imshow(cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR))
-
-    cv2.imshow('frame', annotated_image)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    
-  cv2.destroyWindow('frame')
