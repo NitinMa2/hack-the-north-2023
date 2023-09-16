@@ -13,7 +13,7 @@ model_path = './models/pose_landmarker_heavy.task'
 options = PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=model_path),
     running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=body_tracker.print_result)
+    result_callback=body_tracker.image_process_callback)
 
 cap_cam = cv2.VideoCapture(0)
 cap_cam.set(cv2.CAP_PROP_POS_MSEC, 0)
@@ -31,5 +31,6 @@ with PoseLandmarker.create_from_options(options) as landmarker:
     cv2.imshow('frame', annotated_image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-    
+
+  body_tracker.process_positional_data()
   cv2.destroyWindow('frame')
