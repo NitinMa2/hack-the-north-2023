@@ -14,7 +14,7 @@ model_path = './models/pose_landmarker_heavy.task'
 options = PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=model_path),
     running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=body_tracker.image_process_callback)
+    result_callback=body_tracker.print_result)
 
 cap_cam = cv2.VideoCapture(0)
 cap_cam.set(cv2.CAP_PROP_POS_MSEC, 0)
