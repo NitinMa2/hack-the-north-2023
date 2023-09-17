@@ -1,6 +1,5 @@
 from functools import partial
 from pathlib import Path
-import argparse
 import librosa
 import librosa.display
 import numpy as np
@@ -9,6 +8,7 @@ import scipy.signal as sig
 import psola
 
 SEMITONES_IN_OCTAVE = 12
+
 
 def degrees_from(scale: str):
     """Return the pitch classes (degrees) that correspond to the given scale"""
@@ -50,7 +50,7 @@ def closest_pitch_from_scale(f0, scale):
     return librosa.midi_to_hz(midi_note)
 
 
-def aclosest_pitch_from_scale(f0, scale):
+def aclosest_pitch_from_scale(scale, f0):
     """Map each pitch in the f0 array to the closest pitch belonging to the given scale."""
     sanitized_pitch = np.zeros_like(f0)
     for i in np.arange(f0.shape[0]):
@@ -85,19 +85,9 @@ def autotune(audio, sr, correction_function, plot=False):
     return psola.vocode(audio, sample_rate=int(sr), target_pitch=corrected_f0, fmin=fmin, fmax=fmax)
 
 
-def main():
-    # Parse the command line arguments.
-    ap = argparse.ArgumentParser()
-    ap.add_argument('vocals_file')
-    # ap.add_argument('--plot', '-p', action='store_true', default=False,
-    #                 help='if set, will produce a plot of the results')
-    ap.add_argument('--correction-method', '-c', choices=['closest', 'scale'], default='closest')
-    ap.add_argument('--scale', '-s', type=str, help='see librosa.key_to_degrees;'
-                                                    ' used only for the \"scale\" correction'
-                                                    ' method')
-    args = ap.parse_args()
+def get_autotune_result(vocals_file, correction_method='closest', scale=None):
 
-    filepath = Path(args.vocals_file)
+    filepath = Path(vocals_file)
 
     # Load the audio file.
     y, sr = librosa.load(str(filepath), sr=None, mono=False)
@@ -107,17 +97,15 @@ def main():
         y = y[0, :]
 
     # Pick the pitch adjustment strategy according to the arguments.
-    correction_function = closest_pitch if args.correction_method == 'closest' else \
-        partial(aclosest_pitch_from_scale, scale=args.scale)
+    correction_function = closest_pitch if correction_method == 'closest' else \
+        partial(aclosest_pitch_from_scale, scale)
 
     # Perform the auto-tuning.
     pitch_corrected_y = autotune(y, sr, correction_function)
 
-    # Write the corrected audio to an output file.
-    filepath = filepath.parent / (filepath.stem + '_pitch_corrected' + filepath.suffix)
+    return pitch_corrected_y, sr, filepath
+
+
+def save_autotune_result(pitch_corrected_y, sr, filepath, custom_output_file_suffix=""):
+    filepath = filepath.parent / (filepath.stem + custom_output_file_suffix + filepath.suffix)
     sf.write(str(filepath), pitch_corrected_y, sr)
-
-
-if __name__ == '__main__':
-    main()
-
