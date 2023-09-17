@@ -70,7 +70,7 @@ def process_positional_data():
 
   actions = []
   node_speed_scaling = 100
-  fast_speed_threshold = 5
+  fast_speed_threshold = 4
 
   num_positions = len(stored_positions[0])
   
@@ -84,7 +84,7 @@ def process_positional_data():
   average_node_speed /= num_positions-1
   average_node_speed *= node_speed_scaling
 
-  print(average_node_speed)
+  # print(average_node_speed)
 
   if(average_node_speed >= fast_speed_threshold):
     actions.append("fast")
@@ -153,15 +153,16 @@ def process_positional_data():
 
 
 
-  print(actions)
+  # print(actions)
 
 
-  plt.plot([i.x for i in stored_positions[0]], [i.y for i in stored_positions[0]])
-  plt.plot([i.x for i in stored_positions[1]], [i.y for i in stored_positions[1]])
-  plt.plot([i.x for i in stored_positions[2]], [i.y for i in stored_positions[2]])
-  plt.plot([i.x for i in stored_positions[3]], [i.y for i in stored_positions[3]])
-  plt.plot([i.x for i in stored_positions[4]], [i.y for i in stored_positions[4]])
-  plt.show()
+  # plt.plot([i.x for i in stored_positions[0]], [i.y for i in stored_positions[0]])
+  # plt.plot([i.x for i in stored_positions[1]], [i.y for i in stored_positions[1]])
+  # plt.plot([i.x for i in stored_positions[2]], [i.y for i in stored_positions[2]])
+  # plt.plot([i.x for i in stored_positions[3]], [i.y for i in stored_positions[3]])
+  # plt.plot([i.x for i in stored_positions[4]], [i.y for i in stored_positions[4]])
+  # plt.gca().invert_yaxis()
+  # plt.show()
 
   return actions
   

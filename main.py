@@ -1,3 +1,4 @@
+import os
 import mediapipe as mp
 import cv2
 import body_tracker
@@ -29,7 +30,7 @@ out = cv2.VideoWriter('output.mp4', fourcc, 20.0, (640,480))
 
 with PoseLandmarker.create_from_options(options) as landmarker:
 
-  for i in range(800):
+  for i in range(820):
     ret, frame = cap_cam.read()
 
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
@@ -37,9 +38,17 @@ with PoseLandmarker.create_from_options(options) as landmarker:
 
     annotated_image = body_tracker.draw_landmarks_on_image(frame, body_tracker.latest_result)
     out.write(frame)
-    cv2.imshow('frame', annotated_image)
+    # cv2.imshow('frame', annotated_image)
+    cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+  out.release()
+  cv2.destroyWindow('frame')
+
+  print(">>>>>>>>>>>>>>>>>>>>>>")
+  print("Generating your song...")
+  print('<<<<<<<<<<<<<<<<<<<<<<')
 
   #retrieve body position parameters for lyrics generation
   actions = body_tracker.process_positional_data()
@@ -55,6 +64,10 @@ with PoseLandmarker.create_from_options(options) as landmarker:
   save_autotune_result(pitch_corrected_y, sr, filepath, "_autotuned")
 
   # Combine soundtrack with lyrics audio
-  save_combined_audio(combine_audio("text_to_speech_output_autotuned.mp3", "./audio_manipulation/guitar_soundtrack.mp3"), "final_audio.mp3")
+  x = combine_audio("text_to_speech_output_autotuned.mp3", "./audio_manipulation/guitar_soundtrack.mp3")
 
-  cv2.destroyWindow('frame')
+  # Combine video with audio
+  movie_plus_audio("output.mp4", x)
+
+  # play the final video
+  os.startfile("final_video.mp4")
