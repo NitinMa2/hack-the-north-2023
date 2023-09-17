@@ -17,8 +17,8 @@ def text_to_speech(text, output_dir='.', language='en', play_sound=False):
     str: The path of the generated MP3 file.
     """
     # Create a unique filename
-    unique_filename = f"{uuid.uuid4().hex}.mp3"
-    file_path = os.path.join(output_dir, unique_filename)
+    filename = "text_to_speech_output.mp3"
+    file_path = os.path.join(output_dir, filename)
 
     # Convert text to speech
     tts_engine = gTTS(text=text, lang=language, slow=False)

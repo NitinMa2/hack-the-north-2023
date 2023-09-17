@@ -18,8 +18,7 @@ stored_positions = [[] for i in range(5)] # head, L shoulder, R shoulder, L hand
 def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
     global latest_result
     latest_result = result
-    print('pose landmarker result: {}'.format(result))  
-
+    
 def draw_landmarks_on_image(rgb_image, detection_result):
   if detection_result == None:
      return rgb_image
@@ -66,14 +65,12 @@ def image_process_callback(result: PoseLandmarkerResult, output_image: mp.Image,
   # R hand
   stored_positions[4].append(pose_landmarks_list[0][16])
 
-  print("position store success")
-
 def process_positional_data():
   global stored_positions
 
   actions = []
   node_speed_scaling = 100
-  fast_speed_threshold = 5
+  fast_speed_threshold = 4
 
   num_positions = len(stored_positions[0])
   
@@ -87,7 +84,7 @@ def process_positional_data():
   average_node_speed /= num_positions-1
   average_node_speed *= node_speed_scaling
 
-  print(average_node_speed)
+  # print(average_node_speed)
 
   if(average_node_speed >= fast_speed_threshold):
     actions.append("fast")
@@ -156,15 +153,16 @@ def process_positional_data():
 
 
 
-  print(actions)
+  # print(actions)
 
 
-  plt.plot([i.x for i in stored_positions[0]], [i.y for i in stored_positions[0]])
-  plt.plot([i.x for i in stored_positions[1]], [i.y for i in stored_positions[1]])
-  plt.plot([i.x for i in stored_positions[2]], [i.y for i in stored_positions[2]])
-  plt.plot([i.x for i in stored_positions[3]], [i.y for i in stored_positions[3]])
-  plt.plot([i.x for i in stored_positions[4]], [i.y for i in stored_positions[4]])
-  plt.show()
+  # plt.plot([i.x for i in stored_positions[0]], [i.y for i in stored_positions[0]])
+  # plt.plot([i.x for i in stored_positions[1]], [i.y for i in stored_positions[1]])
+  # plt.plot([i.x for i in stored_positions[2]], [i.y for i in stored_positions[2]])
+  # plt.plot([i.x for i in stored_positions[3]], [i.y for i in stored_positions[3]])
+  # plt.plot([i.x for i in stored_positions[4]], [i.y for i in stored_positions[4]])
+  # plt.gca().invert_yaxis()
+  # plt.show()
 
   return actions
   
