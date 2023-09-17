@@ -1,6 +1,6 @@
 # 💃 Motion2Music 🎶
 
-Created by Nitin Mathew, Marwan Ali, Mona Pei, William Wen at  **Hack The North 2023**
+Created by Nitin Mathew, Marwan Ali, Mona Pei, William Wen at **Hack The North 2023**
 
 ## 🍃 Inspiration
 
@@ -22,11 +22,11 @@ We also have an Arduino-based companion which can dance to the generated music.
 
 ## 🚧 Challenges we ran into
 
-The biggest challenge we ran into created the project that we have. We originally all wanted to do a hardware hack and do something cool with sensors, breadboards and microcomputers but didn't manage to get our hands on enough to persue a full hardware project. But, we were able to instead pivot to a different class of project and still include hardware in the form of a little dancing motor. 
+The biggest challenge we ran into created the project that we have. We originally all wanted to do a hardware hack and do something cool with sensors, breadboards and microcomputers but didn't manage to get our hands on enough to persue a full hardware project. But, we were able to instead pivot to a different class of project and still include hardware in the form of a little dancing motor.
 
 ## 🏅 Accomplishments we're proud of
 
-We're most proud of ourselves for meeting each other. Most of us had the opportunity of teaming up with people we were already familiar with but instead decided to get out of our comfort zone and meet new people. We all learned new things from each other and were exposed to new perspectives on existing things. [some concluding sentence maybe]
+We're most proud of ourselves for meeting each other. Most of us had the opportunity of teaming up with people we were already familiar with but instead decided to get out of our comfort zone and meet new people. We all learned new things from each other and were exposed to new perspectives on existing things. The experience has led made us more hungry for similar experiences in the future!
 
 ## 📖 What we learned
 
@@ -34,4 +34,4 @@ As individuals, we all walked away with some kind of new skill. For some of us i
 
 ## 🔮 What's next for Motion2Music?
 
-The next step for Motion2Music is to generate music and lyrics live. This would be challenging because even a very low latency can be detected by people as a desync and be incredibly uncomfortable. We would have to figure out how to speed up out pipeline lots and find ways to reduce this desync effect.
+The next step for Motion2Music is to expand on our technical abilities and venture into avenues where our tech is more practical and fun! This would be a great feature that may leave it's footprint in the context of social media where users are always looking for new ways to generate and engage with short video content. This would require the ability to generate music and lyrics in real time, requiring us to figure out how to optimize our pipeline and find ways to reduce any out-of-sync effects.
