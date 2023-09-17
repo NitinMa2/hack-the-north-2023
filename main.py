@@ -1,6 +1,8 @@
 import mediapipe as mp
 import cv2
 import body_tracker
+import lyrics
+import text_to_speech
 
 BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
@@ -14,7 +16,7 @@ model_path = './models/pose_landmarker_heavy.task'
 options = PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=model_path),
     running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=body_tracker.print_result)
+    result_callback=body_tracker.image_process_callback)
 
 cap_cam = cv2.VideoCapture(0)
 cap_cam.set(cv2.CAP_PROP_POS_MSEC, 0)
@@ -24,7 +26,7 @@ out = cv2.VideoWriter('output.mp4', fourcc, 20.0, (640,480))
 
 with PoseLandmarker.create_from_options(options) as landmarker:
 
-  for i in range(1000):
+  for i in range(800):
     ret, frame = cap_cam.read()
 
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
@@ -37,5 +39,13 @@ with PoseLandmarker.create_from_options(options) as landmarker:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-  body_tracker.process_positional_data()
+  #retrieve body position parameters for lyrics generation
+  actions = body_tracker.process_positional_data()
+
+  #generate lyrics
+  song = lyrics.lyrics_generation(actions)
+
+  #convert lyrics to speech
+  audio = text_to_speech.text_to_speech(song, play_sound=False)
+
   cv2.destroyWindow('frame')
