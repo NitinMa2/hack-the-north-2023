@@ -10,6 +10,26 @@ import psola
 SEMITONES_IN_OCTAVE = 12
 
 
+def get_autotune_result(vocals_file, correction_method='closest', scale=None):
+
+    filepath = Path(vocals_file)
+
+    # Load the audio file.
+    y, sr = librosa.load(str(filepath), sr=None, mono=False)
+
+    # Only mono-files are handled. If stereo files are supplied, only the first channel is used.
+    if y.ndim > 1:
+        y = y[0, :]
+
+    # Pick the pitch adjustment strategy according to the arguments.
+    correction_function = closest_pitch if correction_method == 'closest' else \
+        partial(aclosest_pitch_from_scale, scale)
+
+    # Perform the auto-tuning.
+    pitch_corrected_y = autotune(y, sr, correction_function)
+
+    return pitch_corrected_y, sr, filepath
+
 def degrees_from(scale: str):
     """Return the pitch classes (degrees) that correspond to the given scale"""
     degrees = librosa.key_to_degrees(scale)
@@ -83,28 +103,6 @@ def autotune(audio, sr, correction_function, plot=False):
 
     # Pitch-shifting using the PSOLA algorithm.
     return psola.vocode(audio, sample_rate=int(sr), target_pitch=corrected_f0, fmin=fmin, fmax=fmax)
-
-
-def get_autotune_result(vocals_file, correction_method='closest', scale=None):
-
-    filepath = Path(vocals_file)
-
-    # Load the audio file.
-    y, sr = librosa.load(str(filepath), sr=None, mono=False)
-
-    # Only mono-files are handled. If stereo files are supplied, only the first channel is used.
-    if y.ndim > 1:
-        y = y[0, :]
-
-    # Pick the pitch adjustment strategy according to the arguments.
-    correction_function = closest_pitch if correction_method == 'closest' else \
-        partial(aclosest_pitch_from_scale, scale)
-
-    # Perform the auto-tuning.
-    pitch_corrected_y = autotune(y, sr, correction_function)
-
-    return pitch_corrected_y, sr, filepath
-
 
 def save_autotune_result(pitch_corrected_y, sr, filepath, custom_output_file_suffix=""):
     filepath = filepath.parent / (filepath.stem + custom_output_file_suffix + filepath.suffix)

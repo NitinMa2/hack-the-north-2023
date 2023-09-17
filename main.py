@@ -3,6 +3,9 @@ import cv2
 import body_tracker
 import lyrics
 import text_to_speech
+from audio_manipulation.auto_tune import *
+from audio_manipulation.combine_audio import *
+ 
 
 BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
@@ -34,7 +37,6 @@ with PoseLandmarker.create_from_options(options) as landmarker:
 
     annotated_image = body_tracker.draw_landmarks_on_image(frame, body_tracker.latest_result)
     out.write(frame)
-    print("frame #: " + str(i))
     cv2.imshow('frame', annotated_image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -46,6 +48,13 @@ with PoseLandmarker.create_from_options(options) as landmarker:
   song = lyrics.lyrics_generation(actions)
 
   #convert lyrics to speech
-  audio = text_to_speech.text_to_speech(song, play_sound=False)
+  text_to_speech.text_to_speech(song, play_sound=False)
+
+  # Call the autotune function and save the result
+  pitch_corrected_y, sr, filepath = get_autotune_result("text_to_speech_output.mp3", "scale", "C:min")
+  save_autotune_result(pitch_corrected_y, sr, filepath, "_autotuned")
+
+  # Combine soundtrack with lyrics audio
+  save_combined_audio(combine_audio("text_to_speech_output_autotuned.mp3", "./audio_manipulation/guitar_soundtrack.mp3"), "final_audio.mp3")
 
   cv2.destroyWindow('frame')

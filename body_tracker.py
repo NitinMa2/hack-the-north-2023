@@ -18,8 +18,7 @@ stored_positions = [[] for i in range(5)] # head, L shoulder, R shoulder, L hand
 def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
     global latest_result
     latest_result = result
-    print('pose landmarker result: {}'.format(result))  
-
+    
 def draw_landmarks_on_image(rgb_image, detection_result):
   if detection_result == None:
      return rgb_image
@@ -65,8 +64,6 @@ def image_process_callback(result: PoseLandmarkerResult, output_image: mp.Image,
 
   # R hand
   stored_positions[4].append(pose_landmarks_list[0][16])
-
-  print("position store success")
 
 def process_positional_data():
   global stored_positions

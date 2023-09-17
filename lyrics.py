@@ -55,4 +55,6 @@ def lyrics_generation(prompts):
     return_likelihoods='NONE'
   )
 
+  # TODO: save lyrics ot a text file
+
   return response.generations[0].text
