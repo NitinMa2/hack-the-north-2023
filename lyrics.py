@@ -1,5 +1,11 @@
+from dotenv import load_dotenv
+import os
 import cohere
 import text_to_speech as tts
+
+load_dotenv()
+
+api_key = os.getenv("COHERE_API_TOKEN_KEY")
 
 def lyrics_generation(prompt1, prompt2=None, prompt3=None, prompt4=None, prompt5=None):
   """
@@ -16,7 +22,7 @@ def lyrics_generation(prompt1, prompt2=None, prompt3=None, prompt4=None, prompt5
     str: The generated lyrics.
   """
   # Initialize the Cohere client
-  co = cohere.Client('KDT6Iz8B5T3P7KaMDm4dfhusGDtnOAzNGm5YOG38')
+  co = cohere.Client(api_key)
   
   # Create the base prompt string
   base_prompt = (
@@ -51,3 +57,6 @@ def lyrics_generation(prompt1, prompt2=None, prompt3=None, prompt4=None, prompt5
 
   return 'Prediction: {}'.format(response.generations[0].text)
 
+
+print(lyrics_generation('The dancer is doing a backflip.', 'The dancer is doing a split.', 'The dancer is doing a backflip.', 'The dancer is doing a split.', 'The dancer is doing a backflip.')
+)
