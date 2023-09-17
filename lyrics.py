@@ -58,5 +58,4 @@ def lyrics_generation(prompt1, prompt2=None, prompt3=None, prompt4=None, prompt5
   return 'Prediction: {}'.format(response.generations[0].text)
 
 
-print(lyrics_generation('The dancer is doing a backflip.', 'The dancer is doing a split.', 'The dancer is doing a backflip.', 'The dancer is doing a split.', 'The dancer is doing a backflip.')
-)
+print(lyrics_generation('The dancer is doing a backflip.', 'The dancer is doing a split.', 'The dancer is doing a backflip.', 'The dancer is doing a split.', 'The dancer is doing a backflip.'))
