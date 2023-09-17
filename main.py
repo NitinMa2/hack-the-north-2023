@@ -6,6 +6,8 @@ import lyrics
 import text_to_speech
 from audio_manipulation.auto_tune import *
 from audio_manipulation.combine_audio import *
+import serial.tools.list_ports
+
  
 
 BaseOptions = mp.tasks.BaseOptions
@@ -69,5 +71,25 @@ with PoseLandmarker.create_from_options(options) as landmarker:
   # Combine video with audio
   movie_plus_audio("output.mp4", x)
 
+  # create video capture object
+  cap = cv2.VideoCapture('final_video.mp4')
+
+  # count the number of frames
+  fps = cap.get(cv2.CAP_PROP_FPS)
+  totalNoFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+  durationInSeconds = totalNoFrames // fps
+
+  # start servo motor
+  portVar = "COM4"
+  serialInst = serial.Serial()
+
+  serialInst.baudrate = 9600
+  serialInst.port = portVar
+  serialInst.open()
+  command = str(durationInSeconds)
+  serialInst.write(command.encode('utf-8'))
+  
   # play the final video
   os.startfile("final_video.mp4")
+
+
