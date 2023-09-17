@@ -2,3 +2,4 @@
 __pycache__/*
 ./lyrics2audio
 .env
+output.mp4

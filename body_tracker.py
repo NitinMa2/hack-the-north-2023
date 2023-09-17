@@ -48,6 +48,9 @@ def image_process_callback(result: PoseLandmarkerResult, output_image: mp.Image,
 
   pose_landmarks_list = result.pose_landmarks
 
+  if (len(pose_landmarks_list) == 0):
+    return
+
   # head
   stored_positions[0].append(pose_landmarks_list[0][0])
 
