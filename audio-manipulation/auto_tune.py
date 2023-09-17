@@ -103,5 +103,9 @@ def get_autotune_result(vocals_file, correction_method='closest', scale=None):
     # Perform the auto-tuning.
     pitch_corrected_y = autotune(y, sr, correction_function)
 
-    return pitch_corrected_y
+    return pitch_corrected_y, sr, filepath
 
+
+def save_autotune_result(pitch_corrected_y, sr, filepath, custom_output_file_suffix=""):
+    filepath = filepath.parent / (filepath.stem + custom_output_file_suffix + filepath.suffix)
+    sf.write(str(filepath), pitch_corrected_y, sr)
