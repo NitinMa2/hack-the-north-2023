@@ -2,3 +2,5 @@
 __pycache__/*
 ./lyrics2audio
 .env
+*.mp4
+*.mp3
