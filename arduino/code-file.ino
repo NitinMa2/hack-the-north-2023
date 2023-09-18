@@ -1,11 +1,10 @@
 #include <Servo.h>
 int pos = 0;
-int counter = 0;
 Servo servo_9;
 
 unsigned long startMillis;  //some global variables available anywhere in the program
 unsigned long currentMillis;
-const unsigned long period = 10000;  //the value is a number of milliseconds  VARIABLE FROM PYTHON
+float periodVal;
 //const byte ledPin = 13;    //using the built in LED
 
 void setup()
@@ -18,6 +17,16 @@ void setup()
 }
 
 void loop()
+{
+  if (Serial.available() > 0){
+    String msg = Serial.readString();
+    periodVal = msg.toFloat();
+    servo_dance(periodVal);
+  }
+
+}
+
+void servo_dance(float period)
 {
   currentMillis = millis();  //get the current "time" (actually the number of milliseconds since the program started)
   if (currentMillis - startMillis >= period)  //test whether the period has elapsed
