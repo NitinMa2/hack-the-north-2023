@@ -7,7 +7,8 @@ import text_to_speech
 from audio_manipulation.auto_tune import *
 from audio_manipulation.combine_audio import *
 import serial.tools.list_ports
-
+from pydub import AudioSegment
+  
  
 
 BaseOptions = mp.tasks.BaseOptions
@@ -40,13 +41,20 @@ with PoseLandmarker.create_from_options(options) as landmarker:
 
     annotated_image = body_tracker.draw_landmarks_on_image(frame, body_tracker.latest_result)
     out.write(frame)
-    # cv2.imshow('frame', annotated_image)
-    cv2.imshow('frame', frame)
+    cv2.imshow('frame', annotated_image)
+    # cv2.imshow('frame', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
   out.release()
   cv2.destroyWindow('frame')
+
+  # calculate duration of video
+  cap = cv2.VideoCapture('output.mp4')
+  fps = cap.get(cv2.CAP_PROP_FPS)
+  totalNoFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+  durationInSeconds = totalNoFrames // fps
+  print("durationInSeconds: ", durationInSeconds)
 
   print(">>>>>>>>>>>>>>>>>>>>>>")
   print("Generating your song...")
@@ -66,29 +74,23 @@ with PoseLandmarker.create_from_options(options) as landmarker:
   save_autotune_result(pitch_corrected_y, sr, filepath, "_autotuned")
 
   # Combine soundtrack with lyrics audio
-  x = combine_audio("text_to_speech_output_autotuned.mp3", "./audio_manipulation/guitar_soundtrack.mp3")
+  x = combine_audio("text_to_speech_output_autotuned.mp3", "./audio_manipulation/hiphop-trimmed-35s.mp3")
 
   # Combine video with audio
   movie_plus_audio("output.mp4", x)
 
-  # create video capture object
-  cap = cv2.VideoCapture('final_video.mp4')
 
-  # count the number of frames
-  fps = cap.get(cv2.CAP_PROP_FPS)
-  totalNoFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-  durationInSeconds = totalNoFrames // fps
 
   # start servo motor
-  portVar = "COM4"
-  serialInst = serial.Serial()
+  # portVar = "COM4"
+  # serialInst = serial.Serial()
 
-  serialInst.baudrate = 9600
-  serialInst.port = portVar
-  serialInst.open()
-  command = str(durationInSeconds)
-  serialInst.write(command.encode('utf-8'))
-  
+  # serialInst.baudrate = 9600
+  # serialInst.port = portVar
+  # serialInst.open()
+  # command = str(durationInSeconds*1000)
+  # serialInst.write(command.encode('utf-8'))
+
   # play the final video
   os.startfile("final_video.mp4")
 

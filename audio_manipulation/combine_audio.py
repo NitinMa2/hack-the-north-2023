@@ -13,7 +13,7 @@ def save_combined_audio(composite_audio_clip, destination_file):
 
 def movie_plus_audio(video_file, composite_audio_clip):
     video_clip = VideoFileClip(video_file)
-    # audio_clip = composite_audio_clip
+    audio_clip = composite_audio_clip
     final_clip = video_clip.set_audio(composite_audio_clip)
     final_clip.write_videofile("final_video.mp4")
 
